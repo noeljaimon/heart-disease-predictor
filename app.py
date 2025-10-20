@@ -1,5 +1,5 @@
 # Streamlit app code starts here
-!pip install streamlit
+
 
 import streamlit as st
 import pandas as pd
@@ -55,5 +55,4 @@ if st.button('Predict'):
     else:
         st.success('No Heart Disease Detected')
 
-!streamlit run app.py
 
