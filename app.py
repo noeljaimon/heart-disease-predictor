@@ -44,6 +44,18 @@ input_dict = {
 }
 input_df = pd.DataFrame([input_dict])
 
+import joblib
+
+# Load the feature columns used during training
+feature_columns = joblib.load('feature_columns.pkl')
+
+input_df = pd.DataFrame([your_dict_of_features])
+input_dummies = pd.get_dummies(input_df)
+
+# Align to columns used during training
+input_aligned = input_dummies.reindex(columns=feature_columns, fill_value=0)
+
+
 # Scale input
 input_scaled = scaler.transform(input_df)
 
