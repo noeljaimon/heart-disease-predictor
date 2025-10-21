@@ -1,13 +1,13 @@
-# Streamlit app code starts here
 
 
 import streamlit as st
 import pandas as pd
 import joblib
 
-# Load pre-trained model and scaler
+# Load pre-trained model, scaler, and feature columns
 model = joblib.load('heart_disease_model.pkl')
 scaler = joblib.load('scaler.pkl')
+feature_columns = joblib.load('feature_columns.pkl')
 
 st.title('Heart Disease Prediction App')
 
@@ -26,7 +26,7 @@ slope = st.selectbox('Slope of ST Segment', [0, 1, 2])
 ca = st.slider('Number of Major Vessels Colored', 0, 4, 0)
 thal = st.selectbox('Thalassemia', [1, 2, 3])
 
-# Prepare input data
+# Prepare input dictionary from user inputs
 input_dict = {
     'age': age,
     'sex': 1 if sex == 'Male' else 0,
@@ -42,22 +42,16 @@ input_dict = {
     'ca': ca,
     'thal': thal
 }
+
+# Convert input to DataFrame
 input_df = pd.DataFrame([input_dict])
 
-import joblib
-
-# Load the feature columns used during training
-feature_columns = joblib.load('feature_columns.pkl')
-
-input_df = pd.DataFrame([your_dict_of_features])
+# One-hot encode and align columns to match training data
 input_dummies = pd.get_dummies(input_df)
-
-# Align to columns used during training
 input_aligned = input_dummies.reindex(columns=feature_columns, fill_value=0)
 
-
-# Scale input
-input_scaled = scaler.transform(input_df)
+# Scale the input features
+input_scaled = scaler.transform(input_aligned)
 
 # Predict button
 if st.button('Predict'):
@@ -66,5 +60,4 @@ if st.button('Predict'):
         st.error('Warning: Heart Disease Detected')
     else:
         st.success('No Heart Disease Detected')
-
 
